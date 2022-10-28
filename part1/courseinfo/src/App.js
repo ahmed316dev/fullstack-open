@@ -2,7 +2,6 @@ import { useState } from 'react'
 import Content from './components/Content'
 import Header from './components/Header'
 import Total from './components/Total'
-debugger
 const App = () => {
   const [counter, setCounter] = useState(0)
   const course = {
