@@ -1,10 +1,7 @@
-import { useState } from 'react'
 import Content from './components/Content'
 import Header from './components/Header'
 import Total from './components/Total'
-debugger
 const App = () => {
-  const [counter, setCounter] = useState(0)
   const course = {
     name: 'Half Stack application development',
     parts: [
@@ -15,8 +12,6 @@ const App = () => {
   }
   return (
     <div>
-      {counter}
-      <button onClick={() => setCounter(counter + 1)}>+</button>
       <Header course={course.name} />
       <Content parts={course.parts} />
       <Total parts={course.parts} />
