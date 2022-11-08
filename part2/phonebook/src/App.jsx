@@ -1,32 +1,96 @@
 import React, { useEffect, useState } from 'react'
-import Filter from './component/Filter'
 import PersonForm from './component/PersonForm'
+import Filter from './component/Filter'
 import Persons from './component/Persons'
+import ErrorMsg from './component/ErrorMsg'
+import {
+  createNew,
+  deletePerson,
+  getAll,
+  updatePerson,
+} from './services/phonebook'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', phone: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', phone: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', phone: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', phone: '39-23-6423122', id: 4 },
-  ])
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [search, setSearch] = useState('')
   const [shown, setShown] = useState(persons)
+  const [msgText, setMsgText] = useState('')
+  const [isMsgTxtSuccess, setIsMsgTxtSuccess] = useState(null)
+
+  const handleDelete = id => {
+    if (
+      !window.confirm(
+        `Are you sure you want to delete "${
+          persons.find(person => person.id === id).name
+        }"?`
+      )
+    )
+      return
+    deletePerson(id)
+      .then(res => {
+        setIsMsgTxtSuccess(true)
+        setMsgText('Person has been successfully removed from the server')
+      })
+      .catch(err => {
+        setIsMsgTxtSuccess(false)
+        setMsgText('Person has already been removed from the server')
+      })
+
+    setPersons([...persons.filter(person => person.id !== id)])
+  }
 
   const handleSubmit = e => {
     e.preventDefault()
     if (persons.some(({ name }) => name === newName)) {
-      alert(`"${newName}" is already added to the phonebook`)
+      if (!window.confirm(`Do you want to update the number of "${newName}"?`))
+        return
+      const { id, name } = persons.find(person => person.name === newName)
+      updatePerson(id, { name: name, number: newPhone })
+        .then(updatedPerson => {
+          setPersons(
+            persons.map(person => {
+              if (person.id === updatedPerson.id) {
+                person.number = updatedPerson.number
+              }
+              return person
+            })
+          )
+        })
+        .catch(err => {
+          setIsMsgTxtSuccess(false)
+          setMsgText('Person does not exist on the server')
+          setTimeout(() => {
+            setMsgText('')
+          }, 5000)
+          setNewName('')
+          setNewPhone('')
+          return
+        })
+      setMsgText('Number Changed')
+      setIsMsgTxtSuccess(true)
+      setTimeout(() => {
+        setMsgText('')
+      }, 5000)
       setNewName('')
       setNewPhone('')
+    } else {
+      const newPerson = {
+        name: newName,
+        number: newPhone,
+      }
 
-      return
+      createNew(newPerson).then(data => setPersons([...persons, data]))
+
+      setMsgText(`Added ${newName}`)
+      setIsMsgTxtSuccess(true)
+      setTimeout(() => {
+        setMsgText('')
+      }, 5000)
+      setNewName('')
+      setNewPhone('')
     }
-    setPersons(persons.concat({ name: newName, phone: newPhone }))
-    setNewName('')
-    setNewPhone('')
   }
 
   useEffect(() => {
@@ -41,9 +105,14 @@ const App = () => {
     }
   }, [search, persons])
 
+  useEffect(() => {
+    getAll().then(data => setPersons(data))
+  }, [])
+
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
+      <ErrorMsg message={msgText} success={isMsgTxtSuccess} />
       <Filter search={search} setSearch={setSearch} />
       <PersonForm
         handleSubmit={handleSubmit}
@@ -52,7 +121,7 @@ const App = () => {
         newPhone={newPhone}
         setNewPhone={setNewPhone}
       />
-      <Persons shown={shown} />
+      <Persons handleDelete={handleDelete} shown={shown} />
     </div>
   )
 }

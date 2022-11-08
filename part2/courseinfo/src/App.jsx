@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Course from './components/Course'
 
 const App = () => {
+  const [test, setTest] = useState('')
   const courses = [
     {
       name: 'Half Stack application development',
@@ -47,7 +48,14 @@ const App = () => {
     },
   ]
 
-  return courses.map(course => <Course course={course} />)
+  return (
+    <>
+      {courses.map(course => (
+        <Course course={course} />
+      ))}
+      <input type="text" value={test} onChange={e => setTest(e.target.value)} />
+    </>
+  )
 }
 
 export default App
