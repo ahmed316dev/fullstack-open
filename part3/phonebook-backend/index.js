@@ -4,6 +4,8 @@ import cors from 'cors'
 
 const app = express()
 
+app.use(express.static('build'))
+
 // make use of the cors middleware
 app.use(cors())
 
