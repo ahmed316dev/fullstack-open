@@ -59,8 +59,9 @@ const App = () => {
           )
         })
         .catch(err => {
+          console.log('err', err)
           setIsMsgTxtSuccess(false)
-          setMsgText('Person does not exist on the server')
+          setMsgText(err.message)
           setTimeout(() => {
             setMsgText('')
           }, 5000)
