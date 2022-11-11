@@ -1,7 +1,7 @@
-POST http://localhost:3001/api/persons
+POST https://copper-hippo-gown.cyclic.app/api/persons
 Content-Type: application/json
 
 {
-    "name":"name1",
+    "name":"name2",
     "number":"009-12334556"
 }

@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
+// eslint-disable-next-line no-undef
 const uri = process.env.MONGODB_URI
 
 // regex for validating phone number
@@ -15,10 +16,9 @@ const validateNumber = [
   'Not a valid number',
 ]
 
-console.log('connecting to MongoDB')
 mongoose
   .connect(uri)
-  .then(res => {
+  .then(() => {
     console.log('connected to MongoDB')
   })
   .catch(err => console.log('error connecting to MongoDB:', err))

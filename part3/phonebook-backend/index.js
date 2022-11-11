@@ -1,8 +1,9 @@
-import express, { response } from 'express'
+import express from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
 import { Person } from './models/person.js'
-import mongoose from 'mongoose'
+import dotenv from 'dotenv'
+dotenv.config()
 
 const app = express()
 app.use(express.json())
@@ -12,10 +13,11 @@ app.use(express.static('build'))
 // make use of the cors middleware
 app.use(cors())
 
+// eslint-disable-next-line no-undef
 const PORT = process.env.PORT || 3001
 
 // make use of morgan middelware to log HTTP requests
-morgan.token('reqBody', (req, res) => JSON.stringify(req.body))
+morgan.token('reqBody', req => JSON.stringify(req.body))
 
 app.use(
   morgan((tokens, req, res) => {
@@ -65,15 +67,13 @@ app.get('/api/persons/:id', (req, res, next) => {
 // delete a single resource
 app.delete('/api/persons/:id', (req, res, next) => {
   const { id } = req.params
+  // eslint-disable-next-line no-console
+  console.log('deleted')
   Person.findByIdAndRemove(id)
-    .then(result => {
+    .then(() => {
       return res.status(204).end()
     })
     .catch(error => next(error))
-
-  // return res
-  //   .status(404)
-  //   .send("<div>The person you are trying to delete doesn't exist</div>")
 })
 
 // update a person
@@ -118,9 +118,10 @@ const unknownEndpoint = (req, res) => {
 }
 app.use(unknownEndpoint)
 
+// eslint-disable-next-line no-console
 app.listen(PORT, () => console.log('server running on port', PORT))
 
-const errorHandler = (error, req, res, next) => {
+const errorHandler = (error, req, res) => {
   if (error.name === 'CastError') {
     return res.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
@@ -128,6 +129,5 @@ const errorHandler = (error, req, res, next) => {
   } else {
     return res.status(404).send({ error }).end()
   }
-  next(error)
 }
 app.use(errorHandler)
