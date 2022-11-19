@@ -1,9 +1,8 @@
-POST http://localhost:3001/api/blogs
+POST http://localhost:3001/api/users
 Content-Type: application/json
 
 {
-    "title":"How to Fix TypeError: Cannot read Property 'push' of Undefined in JavaScript",
-    "author":"Joel Olawanle",
-    "url":"https://www.freecodecamp.org/news/fix-typeerror-cannot-read-property-push-of-undefined-in-javascript/",
-    "likes":22
+    "name":"myName",
+    "username":"myUsername",
+    "password":"123456"
 }

@@ -1,5 +1,7 @@
+import { NODE_ENV } from './config.js'
+
 export const info = (...params) => {
-  console.log(...params)
+  if (NODE_ENV !== 'test') console.log(...params)
 }
 
 export const error = (...params) => {
