@@ -1,0 +1,7 @@
+{
+  "eslint.options": {
+    "eslint.options": {
+      "overrideConfigFile": "/home/influ-unix/.eslintrc.json"
+    }
+  }
+}

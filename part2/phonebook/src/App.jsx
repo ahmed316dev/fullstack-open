@@ -82,7 +82,15 @@ const App = () => {
         number: newPhone,
       }
 
-      createNew(newPerson).then(data => setPersons([...persons, data]))
+      createNew(newPerson)
+        .then(res => {
+          setPersons([...persons, res.data])
+        })
+        .catch(err => {
+          console.log(err)
+          setMsgText(err.message)
+          setIsMsgTxtSuccess(false)
+        })
 
       setMsgText(`Added ${newName}`)
       setIsMsgTxtSuccess(true)

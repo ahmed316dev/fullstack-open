@@ -1,0 +1,10 @@
+PUT http://localhost:3001/api/blogs/63808cad7e56373543a6798796
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBTbWl0aCIsInVzZXJuYW1lIjoiam9obnNtaXRoIiwiaWF0IjoxNjY5MzY4ODY2fQ.qTDP_DgJaltar989tG8rPw35F5eJBeoOt2t0PlxyTo8
+
+{
+    "title": "design patterns",
+    "author": "Michael Chan",
+    "url": "https://reactpatterns.com/",
+    "likes":"7"
+}

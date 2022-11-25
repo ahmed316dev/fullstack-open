@@ -2,13 +2,31 @@ import app from '../app'
 import supertest from 'supertest'
 import mongoose from 'mongoose'
 import { Blog } from '../models/blog'
-import { blogsInDb, blogsInRoute, initialBlogs } from './test_helper.js'
+import {
+  blogsInDb,
+  blogsInRoute,
+  initialBlogs,
+  initialUser,
+} from './test_helper.js'
+import { User } from '../models/user'
+import JWT from 'jsonwebtoken'
+import { SECRET } from '../utils/config'
 
 export const api = supertest(app)
 
+let userJWT
+
 beforeEach(async () => {
   await Blog.deleteMany({})
+  await User.deleteMany({})
+
+  const user = new User(await initialUser())
+  await user.save()
+
+  userJWT = JWT.sign({ name: user.name, username: user.username }, SECRET)
+
   for (let blog of initialBlogs) {
+    blog.user = user._id
     const blogObject = new Blog(blog)
     await blogObject.save()
   }
@@ -35,6 +53,7 @@ test('the first blog is about HTTP methods', async () => {
 })
 
 test('a valid blog can be added', async () => {
+  const blogsInDbABefore = await blogsInDb()
   const newBlog = {
     title: 'Difference between forEach() and map()',
     author: 'Priyanka Mohanty',
@@ -45,12 +64,15 @@ test('a valid blog can be added', async () => {
   const addedBlog = await api
     .post('/api/blogs')
     .send(newBlog)
+    .set('Authorization', `Bearer ${userJWT}`)
     .expect(201)
     .expect('Content-Type', /application\/json/)
-  const addedBlogProcessed = JSON.parse(addedBlog.res.text)
-  const response = await blogsInDb()
-  expect(response).toHaveLength(initialBlogs.length + 1)
-  expect(response).toContainEqual(addedBlogProcessed)
+  const addedBlogProcessed = addedBlog.body
+  const blogsInDbAfter = await blogsInDb()
+  delete addedBlogProcessed.user
+  blogsInDbAfter.forEach(blog => delete blog.user)
+  expect(blogsInDbAfter).toHaveLength(blogsInDbABefore.length + 1)
+  expect(blogsInDbAfter).toContainEqual(addedBlogProcessed)
 })
 
 test('likes default to 0 when not provided', async () => {
@@ -63,11 +85,13 @@ test('likes default to 0 when not provided', async () => {
   const addedBlog = await api
     .post('/api/blogs')
     .send(newBlog)
+    .set('Authorization', `Bearer ${userJWT}`)
     .expect(201)
     .expect('Content-Type', /application\/json/)
   const addedBlogProcessed = JSON.parse(addedBlog.res.text)
   expect(addedBlogProcessed.likes).toBe(0)
 })
+
 test('get 400 if title or url are unprovided', async () => {
   const newBlog = {
     author: 'Priyanka Mohanty',
@@ -83,25 +107,37 @@ test('get 400 if title or url are unprovided', async () => {
 })
 
 test('blog is successfully deleted', async () => {
-  const { body: allBlogs } = await blogsInRoute()
-  const deletedId = allBlogs[0].id
-  await api.delete(`/api/blogs/${deletedId}`).expect(204)
+  const blogsInDbABefore = await blogsInDb()
+  const deletedId = blogsInDbABefore[0].id
+
+  await api
+    .delete(`/api/blogs/${deletedId}`)
+    .set('Authorization', `Bearer ${userJWT}`)
+    .expect(204)
+
+  const blogsInDbAfter = await blogsInDb()
+  expect(blogsInDbAfter).toHaveLength(blogsInDbABefore.length - 1)
 })
 
 test('blog is successfuly updated', async () => {
-  const { body: allBlogs } = await blogsInRoute()
-  const blog = { ...allBlogs[0], author: 'John Doe' }
+  const blogs = await blogsInDb()
+  const blog = {
+    ...blogs[0],
+    author: 'John Doe',
+    user: blogs[0].user.toString(),
+  }
   const id = blog.id
-
   // deleting id because it's not supposed to be updated/changed
   delete blog.id
   const { body: updatedBlog } = await api
     .put(`/api/blogs/${id}`)
     .send(blog)
+    .set('Authorization', `Bearer ${userJWT}`)
     .expect(200)
 
   // deleting id for the sake of comparision
   delete updatedBlog.id
+
   expect(updatedBlog).toEqual(blog)
 })
 

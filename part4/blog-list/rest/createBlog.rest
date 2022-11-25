@@ -1,0 +1,22 @@
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBTbWl0aCIsInVzZXJuYW1lIjoiam9obnNtaXRoIiwiaWF0IjoxNjY5MzY4ODY2fQ.qTDP_DgJaltar989tG8rPw35F5eJBeoOt2t0PlxyTo8
+
+{
+    "title": "design concepts",
+    "author": "Michael Chan",
+    "url": "https://reactpatterns.com/",
+    "likes":"7"
+}
+
+###
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSmFuZSBTbWl0aCIsInVzZXJuYW1lIjoiamFuZXNtaXRoIiwiaWF0IjoxNjY5MzY4ODM1fQ.Ao0wOKEQMWQyDgkMfOw9NT9PcU6U1jYC9UKT-6Wp1bE
+
+{
+    "title": "C++",
+    "author": "Michael Chan",
+    "url": "https://reactpatterns.com/",
+    "likes":"7"
+}

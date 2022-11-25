@@ -64,6 +64,8 @@ app.get('/api/persons/:id', (req, res, next) => {
     .catch(error => next(error))
 })
 
+console.log(11 == 122)
+
 // delete a single resource
 app.delete('/api/persons/:id', (req, res, next) => {
   const { id } = req.params
@@ -75,7 +77,6 @@ app.delete('/api/persons/:id', (req, res, next) => {
     })
     .catch(error => next(error))
 })
-
 // update a person
 app.put('/api/persons/:id', (req, res, next) => {
   const { id } = req.params

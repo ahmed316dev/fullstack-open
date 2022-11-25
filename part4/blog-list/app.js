@@ -6,12 +6,20 @@ import mongoose from 'mongoose'
 import { MONGODB_URI } from './utils/config.js'
 const app = express()
 import 'express-async-errors'
+import {
+  errorHandler,
+  tokenExtractor,
+  userExtractor,
+} from './utils/middleware.js'
 
 mongoose.connect(MONGODB_URI)
 
 app.use(express.json())
 app.use(cors())
+app.use(tokenExtractor)
+app.use(userExtractor)
 app.use('/api/users', usersRouter)
-app.use('/api/blogs', blogsRouter)
+app.use('/api/blogs', userExtractor, blogsRouter)
+app.use(errorHandler)
 
 export default app

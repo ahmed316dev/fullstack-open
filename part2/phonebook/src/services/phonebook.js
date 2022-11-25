@@ -11,10 +11,7 @@ export const getAll = () => {
 }
 
 export const createNew = newPerson => {
-  return axios
-    .post(baseURL, newPerson)
-    .then(({ data }) => data)
-    .catch(err => console.log(err))
+  return axios.post(baseURL, newPerson)
 }
 
 export const deletePerson = id => {

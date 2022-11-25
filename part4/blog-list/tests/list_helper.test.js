@@ -6,7 +6,7 @@ describe('total likes', () => {
     {
       _id: '637344132c47c93500183957',
       title:
-        "How to Fix TypeError: Cannot read Property 'push' of Undefined in JavaScript",
+        'How to Fix TypeError: Cannot read Property push of Undefined in JavaScript',
       author: 'Joel Olawanle',
       url: 'https://www.freecodecamp.org/news/fix-typeerror-cannot-read-property-push-of-undefined-in-javascript/',
       likes: 22,
