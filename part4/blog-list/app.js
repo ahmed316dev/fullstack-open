@@ -11,15 +11,16 @@ import {
   tokenExtractor,
   userExtractor,
 } from './utils/middleware.js'
+import loginRouter from './controllers/login.js'
 
 mongoose.connect(MONGODB_URI)
 
 app.use(express.json())
 app.use(cors())
 app.use(tokenExtractor)
-app.use(userExtractor)
 app.use('/api/users', usersRouter)
 app.use('/api/blogs', userExtractor, blogsRouter)
+app.use('/api/login', loginRouter)
 app.use(errorHandler)
 
 export default app

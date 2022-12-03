@@ -4,7 +4,6 @@ import { User } from '../models/user.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { SECRET } from '../utils/config.js'
-import { Blog } from '../models/blog.js'
 
 const usersRouter = Router()
 // a route for creating users
